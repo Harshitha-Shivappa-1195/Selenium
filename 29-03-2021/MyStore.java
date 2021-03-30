@@ -24,37 +24,36 @@ public class MyStore {
 		String search = "//input[@id='search_query_top']";
 		double total = 0;
 		driver.findElement(By.xpath(search)).sendKeys("Dress");
+
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='ac_results']//child::ul/li[1]"))).click();
+
 		driver.findElement(By.xpath("//button[@name='Submit']")).click();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='button-container']//child::a"))).click();
-    
-		driver.findElement(By.xpath("//div[@id='header_logo']//child::a")).click();
+		//to home page
+		driver.findElement(By.xpath("//div[@id='header_logo']//child::a")).click(); 
 
 		driver.findElement(By.xpath(search)).sendKeys("Dress");
 		driver.findElement(By.xpath(search)).sendKeys(Keys.ENTER);
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); 
 
-		WebElement element = driver.findElement(By.xpath("//div[@id='center_column']/ul/li[1]/div/div/div/a/img"));
 
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].scrollIntoView();", element);
-
+		WebElement element;
 		Actions action = new Actions(driver);
-		action.moveToElement(element).perform();
-		driver.findElement(By.xpath("//a[@title='Add to cart']")).click();
-		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-		driver.findElement(By.xpath("//span[@title='Continue shopping']")).click();
+	/*	JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].scrollIntoView();", element); */
 
-		driver.findElement(By.xpath("//div[@id='center_column']/ul/li[2]/div/div/div/a[@title='Add to cart']")).click();
-		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-		driver.findElement(By.xpath("//span[@title='Continue shopping']")).click();
 
-		element = driver.findElement(By.xpath("//div[@id='center_column']/ul/li[3]/div/div/div/a/img"));
-		action.moveToElement(element).perform();
-		driver.findElement(By.xpath("//div[@id='center_column']/ul/li[3]/div/div/div/a[@title='Add to cart']")).click();
-		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-		driver.findElement(By.xpath("//a[@title='Proceed to checkout']")).click();
-
+		for(int i=1; i<=3; i++) {
+			element = driver.findElement(By.xpath("//div[@id='center_column']/ul/li["+i+"]/div/div/div/a/img"));
+			action.moveToElement(element).perform();
+			driver.findElement(By.xpath("//div[@id='center_column']/ul/li["+i+"]/div/div/div/a[@title='Add to cart']")).click();
+			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			if(i!=3) 
+				driver.findElement(By.xpath("//span[@title='Continue shopping']")).click();
+			else
+				driver.findElement(By.xpath("//a[@title='Proceed to checkout']")).click();
+		}
+		
 		List<WebElement> price = driver.findElements(By.xpath("//td[@data-title='Total']"));
 		
 		for(int i=0; i<price.size(); i++) {
@@ -66,11 +65,9 @@ public class MyStore {
 		String check = driver.findElement(By.xpath("//td[@id='total_product']")).getText();
 		String finalPrice = "$"+total;
 		System.out.println("Final Price: "+finalPrice);
-		if(finalPrice.equalsIgnoreCase(check)) {
+		if(finalPrice.equalsIgnoreCase(check)) 
 			System.out.println("Same total price");
-		} else 
+		else 
 			System.out.println("Not same total price");
-		
-		// driver.quit();
 	}
 }
